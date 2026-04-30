@@ -22,10 +22,11 @@ def test_env_override(monkeypatch):
     assert s.data.default_path.name == "test_override.csv"
 
 
-def test_invalid_strategy_raises():
+def test_invalid_strategy_raises() -> None:
     """Ensure invalid cleaning strategies raise a validation error."""
     with pytest.raises(ValidationError):
-        CleaningConfig(fill_missing="magic")
+        # EN: Ignore mypy error because we intentionally pass an invalid literal
+        CleaningConfig(fill_missing="magic")  # type: ignore[arg-type]
 
 
 def test_threshold_bounds():

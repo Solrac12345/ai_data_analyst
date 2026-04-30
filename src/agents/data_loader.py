@@ -1,4 +1,3 @@
-# src/agents/data_loader.py
 # Agent responsible for loading data from CSV, Excel, or other sources
 
 import pandas as pd
@@ -8,12 +7,9 @@ from src.agents.base import BaseAgent
 
 
 class DataLoaderAgent(BaseAgent[AnalysisState]):
-    """
-    Loads data from file paths into a pandas DataFrame.
-    Supports CSV and Excel formats with encoding handling.
-    """
+    """Loads data from file paths into a pandas DataFrame."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(name="DataLoaderAgent")
 
     def execute(self, state: AnalysisState) -> AnalysisState:

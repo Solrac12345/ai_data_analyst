@@ -27,6 +27,8 @@ def test_field_assignment():
         cleaning_report={"dropped_rows": 5},
         insights=["High correlation detected"],
     )
+    assert state.raw_data is not None
     assert state.raw_data["col"] == [1, 2]
+    assert state.data_path == "test.csv"
     assert state.cleaning_report["dropped_rows"] == 5
     assert state.insights[0] == "High correlation detected"
