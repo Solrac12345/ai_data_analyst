@@ -7,7 +7,9 @@ from src.agents.data_loader import DataLoaderAgent
 from src.agents.cleaning import CleaningAgent
 
 
-def route_with_load(state: AnalysisState) -> Literal["load", "clean", "analyze", "visualize", "end"]:
+def route_with_load(
+    state: AnalysisState,
+) -> Literal["load", "clean", "analyze", "visualize", "end"]:
     """
     Determine the next node based on state completion.
     Logic: If path exists but no data -> Load. If data exists but not clean -> Clean. Etc.
@@ -29,17 +31,17 @@ def create_supervisor_graph() -> StateGraph:
     Build and compile the LangGraph workflow with real agents.
     """
     workflow = StateGraph(AnalysisState)
-    
+
     # Initialize real agents
     loader = DataLoaderAgent()
     cleaner = CleaningAgent()
-    
+
     # Register nodes
     workflow.add_node("load", loader.execute)
     workflow.add_node("clean", cleaner.execute)
-    workflow.add_node("analyze", lambda s: s)      # Placeholder for Phase 3
-    workflow.add_node("visualize", lambda s: s)    # Placeholder for Phase 3
-    
+    workflow.add_node("analyze", lambda s: s)  # Placeholder for Phase 3
+    workflow.add_node("visualize", lambda s: s)  # Placeholder for Phase 3
+
     # Define conditional routing from start
     workflow.add_conditional_edges(
         "__start__",
@@ -52,13 +54,13 @@ def create_supervisor_graph() -> StateGraph:
             "end": END,
         },
     )
-    
+
     # Chain nodes linearly after entry
     workflow.add_edge("load", "clean")
     workflow.add_edge("clean", "analyze")
     workflow.add_edge("analyze", "visualize")
     workflow.add_edge("visualize", END)
-    
+
     return workflow.compile()
 
 
