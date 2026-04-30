@@ -1,54 +1,50 @@
-# EN: Core state management using Pydantic v2 for type-safe agent routing / FR: Gestion d'état principale avec Pydantic v2 pour un routage d'agents typé
-from __future__ import annotations
+# Defines the Pydantic state object passed through the LangGraph workflow
 
 from typing import Any, Optional
-from datetime import datetime
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field
 
 
-class PipelineState(BaseModel):
-    # EN: Allow pandas DataFrames while enforcing strict validation on metadata / FR: Autoriser les DataFrames pandas tout en validant strictement les métadonnées
-    model_config = ConfigDict(arbitrary_types_allowed=True, strict=True)
+class AnalysisState(BaseModel):
+    """
+    Shared state container for the multi-agent data analysis pipeline.
+    Each agent reads/writes only the fields relevant to its stage.
+    """
 
-    # EN: Ingested dataset reference (DataFrame or secure file path) / FR: Référence du jeu de données ingéré (DataFrame ou chemin sécurisé)
+    # Data loading stage
     raw_data: Optional[Any] = Field(
-        default=None,
-        description="EN: Initial loaded data / FR: Données initialement chargées",
+        default=None, description="Raw DataFrame from loader"
+    )
+    data_path: Optional[str] = Field(default=None, description="Path to loaded dataset")
+
+    # Cleaning stage
+    clean_data: Optional[Any] = Field(default=None, description="Cleaned DataFrame")
+    cleaning_report: dict = Field(
+        default_factory=dict, description="Summary of cleaning actions"
     )
 
-    # EN: Cleaned, validated & analysis-ready dataset / FR: Jeu de données nettoyé, validé & prêt pour l'analyse
-    clean_data: Optional[Any] = Field(
-        default=None, description="EN: Processed dataset / FR: Jeu de données traité"
+    # Analysis stage
+    summary_stats: Optional[dict] = Field(
+        default=None, description="Descriptive statistics"
     )
+    correlations: Optional[dict] = Field(default=None, description="Correlation matrix")
+    insights: list[str] = Field(default_factory=list, description="Generated insights")
 
-    # EN: Statistical summaries, correlation maps & actionable insights / FR: Résumés statistiques, cartes de corrélation & insights actionnables
-    summary: Optional[dict[str, Any]] = Field(
-        default=None, description="EN: Analytical output / FR: Sortie analytique"
-    )
-
-    # EN: Generated visualization code snippets (Plotly/Matplotlib) / FR: Extraits de code de visualisation générés (Plotly/Matplotlib)
+    # Visualization stage
     plots_code: list[str] = Field(
-        default_factory=list, description="EN: Plotting scripts / FR: Scripts de tracé"
+        default_factory=list, description="Generated plotting code"
+    )
+    plot_paths: list[str] = Field(
+        default_factory=list, description="Paths to saved plots"
     )
 
-    # EN: Execution tracking, security flags & error recovery context / FR: Suivi d'exécution, drapeaux de sécurité & contexte de récupération d'erreurs
-    created_at: datetime = Field(
-        default_factory=datetime.now,
-        description="EN: Pipeline initiation time / FR: Heure d'initialisation",
-    )
-    current_step: str = Field(
-        default="initialized",
-        description="EN: Active orchestration phase / FR: Phase d'orchestration active",
-    )
-    error_log: list[str] = Field(
-        default_factory=list,
-        description="EN: Sanitized exception traces / FR: Traces d'exceptions assainies",
-    )
-    is_secure: bool = Field(
-        default=True,
-        description="EN: Input validation & sandbox status / FR: Statut de validation & sandbox",
-    )
+    # Pipeline control
+    current_step: str = Field(default="load", description="Current pipeline step")
+    errors: list[str] = Field(default_factory=list, description="Accumulated errors")
 
-    def to_serializable(self) -> dict:
-        # EN: Export state for CI/logs while stripping heavy in-memory objects / FR: Exporter l'état pour CI/logs en retirant les objets mémoire lourds
-        return self.model_dump(exclude={"raw_data", "clean_data"})
+    def add_error(self, message: str) -> None:
+        """Append an error message to the state."""
+        self.errors.append(message)
+
+    def is_valid(self) -> bool:
+        """Return True if no errors have been recorded."""
+        return len(self.errors) == 0

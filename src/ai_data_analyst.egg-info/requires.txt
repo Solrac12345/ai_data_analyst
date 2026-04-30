@@ -1,6 +1,7 @@
 pydantic>=2.6.0
 pydantic-settings>=2.6.0
 pyyaml>=6.0.0
+langgraph>=0.2.0
 
 [dev]
 pytest>=7.4.0

@@ -4,7 +4,27 @@ from pathlib import Path
 from typing import Literal
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import SettingsConfigDict, YamlConfigSettingsSource
 
+# Update the Settings class config
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        yaml_file=Path(__file__).parent / "settings.yaml",
+        env_file=".env",
+        env_prefix="APP_",
+        env_nested_delimiter="__",
+        extra="ignore"
+    )
+    
+    @classmethod
+    def settings_customise_sources(cls, settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings):
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            YamlConfigSettingsSource(settings_cls),  # Register YAML source
+            file_secret_settings,
+        )
 
 class DataConfig(BaseSettings):
     """Configuration for data loading."""
