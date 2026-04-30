@@ -3,8 +3,7 @@
 
 import pytest
 from pydantic import ValidationError
-from config.settings import Settings, CleaningConfig, DataConfig
-
+from config.settings import Settings, CleaningConfig
 
 def test_defaults_match_yaml():
     """Verify that default values match the YAML configuration."""
