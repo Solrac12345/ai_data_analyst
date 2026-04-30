@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.env
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# Data (Never commit large datasets!)
+*.csv
+*.xlsx
+*.parquet
+data/
+
+# OS
+.DS_Store

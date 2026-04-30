@@ -1,0 +1,18 @@
+# Application configuration settings
+
+data:
+  default_path: "data/sample_dirty.csv"   # Default dataset path
+  encoding: "utf-8"                       # File encoding format
+
+cleaning:
+  drop_duplicates: true                   # Remove duplicate rows
+  fill_missing: "mean"                    # Strategy for missing values
+  outlier_threshold: 3.0                  # Z-score threshold for outlier detection
+
+analysis:
+  correlation_method: "pearson"           # Correlation calculation method
+  top_insights: 5                         # Number of top insights to generate
+
+visualization:
+  library: "matplotlib"                   # Plotting library
+  style: "default"                        # Matplotlib style preset
