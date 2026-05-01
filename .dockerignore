@@ -1,0 +1,27 @@
+# .dockerignore
+# EN: Exclude virtual environment
+.venv/
+venv/
+
+# EN: Exclude git files
+.git/
+.gitignore
+
+# EN: Exclude Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# EN: Exclude IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# EN: Exclude OS files
+.DS_Store
+Thumbs.db
+
+# EN: Exclude reports and output directories (we will mount these as volumes)
+output/
+reports/
