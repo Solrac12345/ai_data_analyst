@@ -31,6 +31,15 @@ Automated data analysis pipeline with specialized agents.
 
 **Status**: ✅ All tests passing, CI green
 
+### ✅ Phase 3: Analysis & Visualization (Complete)
+- [x] `AnalysisAgent`: Descriptive statistics, correlation matrices, natural language insights
+- [x] `VizAgent`: Auto-generation of Matplotlib/Plotly code snippets
+- [x] CLI entrypoint: `python -m src.cli.main analyze data.csv`
+- [x] Full pipeline integration test
+- [x] Updated documentation & badges
+
+**Status**: ✅ All tests passing, CI green
+
 ## 📦 Installation
 
 ### Prerequisites
