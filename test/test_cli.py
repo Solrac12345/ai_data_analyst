@@ -16,12 +16,13 @@ def test_analyze_command_success(tmp_path: Path) -> None:
     df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6]})
     df.to_csv(csv_file, index=False)
 
-    # EN: Invoke directly with options (no subcommand needed)
-    result = runner.invoke(app, ["--path", str(csv_file)])
+    report_file = tmp_path / "report.html"
+    result = runner.invoke(app, ["--path", str(csv_file), "--report", str(report_file)])
 
     assert result.exit_code == 0
     assert "Starting Analysis" in result.output
-    assert "Insights" in result.output or "Visualizations saved to" in result.output
+    assert "Report saved to" in result.output
+    assert report_file.exists(), "Expected report.html to be created"
 
 
 def test_analyze_command_missing_file() -> None:

@@ -4,8 +4,9 @@
 import typer
 from rich.console import Console
 from src.core.supervisor import supervisor_graph
+from src.core.state import AnalysisState
+from src.reporting.generator import ReportGenerator
 
-# EN: Single-command CLI app / FR: Application CLI à commande unique
 app = typer.Typer(help="AI Data Analyst CLI", add_completion=False)
 console = Console()
 
@@ -17,6 +18,9 @@ def analyze(
     ),
     output_dir: str = typer.Option(
         "output", "--output-dir", "-o", help="Directory for saving outputs"
+    ),
+    report_path: str = typer.Option(
+        "output/report.html", "--report", "-r", help="Path for the HTML report"
     ),
 ) -> None:
     """
@@ -42,6 +46,24 @@ def analyze(
         if errors:
             console.print(f"[red]Errors found:[/red] {errors}")
             return
+
+        # EN: Generate Report / FR: Générer le rapport
+        console.print("\n[yellow]Generating HTML Report...[/yellow]")
+
+        # Ensure we pass an AnalysisState object to the generator
+        state_for_report = (
+            final_state
+            if not isinstance(final_state, dict)
+            else AnalysisState(**final_state)
+        )
+
+        generator = ReportGenerator()
+        success = generator.generate(state_for_report, report_path)
+
+        if success:
+            console.print(f"[green]✅ Report saved to:[/green] {report_path}")
+        else:
+            console.print("[red]❌ Failed to save report.[/red]")
 
         if insights:
             console.print("\n[bold green]Insights:[/bold green]")
