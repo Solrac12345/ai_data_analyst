@@ -23,14 +23,15 @@ class VizAgent(BaseAgent[AnalysisState]):
             state.add_error("No clean_data available for visualization")
             return state
 
-        df: pd.DataFrame = state.clean_data  # type: ignore[assignment]
+        df: pd.DataFrame = (
+            state.clean_data
+        )  # EN: Removed unused type: ignore / FR: Ignore supprimé
         numeric_df = df.select_dtypes(include=[np.number])
 
         if numeric_df.empty:
             self.log("No numeric columns found for visualization")
             return state
 
-        # Select first numeric column for demo visualization
         col = numeric_df.columns[0]
         library = settings.visualization.library
 

@@ -24,7 +24,9 @@ class AnalysisAgent(BaseAgent[AnalysisState]):
             state.add_error("No clean_data available for analysis")
             return state
 
-        df: pd.DataFrame = state.clean_data  # type: ignore[assignment]
+        df: pd.DataFrame = (
+            state.clean_data
+        )  # EN: Removed unused type: ignore / FR: Ignore supprimé
         stats: dict[str, Any] = {}
         correlations: dict[str, Any] = {}
         insights: list[str] = []
@@ -33,7 +35,8 @@ class AnalysisAgent(BaseAgent[AnalysisState]):
             # 1. Descriptive Statistics
             numeric_df = df.select_dtypes(include=[np.number])
             if not numeric_df.empty:
-                stats = numeric_df.describe().to_dict()
+                # EN: pandas-stubs returns dict[Hashable, Any] / FR: pandas-stubs renvoie dict[Hashable, Any]
+                stats = numeric_df.describe().to_dict()  # type: ignore[assignment]
                 self.log(
                     f"Computed descriptive statistics for {len(numeric_df.columns)} numeric columns"
                 )
@@ -42,7 +45,8 @@ class AnalysisAgent(BaseAgent[AnalysisState]):
             if len(numeric_df.columns) > 1:
                 method = settings.analysis.correlation_method
                 corr_matrix = numeric_df.corr(method=method)
-                correlations = corr_matrix.to_dict()
+                # EN: pandas-stubs returns dict[Hashable, Any] / FR: pandas-stubs renvoie dict[Hashable, Any]
+                correlations = corr_matrix.to_dict()  # type: ignore[assignment]
                 self.log(f"Computed {method} correlation matrix")
 
             # 3. Generate Insights
@@ -64,18 +68,15 @@ class AnalysisAgent(BaseAgent[AnalysisState]):
         """Generate simple, actionable insights from the data."""
         insights: list[str] = []
 
-        # Basic dataset info
         insights.append(
             f"Dataset contains {len(df)} rows and {len(df.columns)} columns."
         )
 
-        # Numeric column summary
         if not numeric_df.empty:
             insights.append(
                 f"Found {len(numeric_df.columns)} numeric columns suitable for analysis."
             )
 
-        # Highest correlation insight
         if corr:
             max_corr = 0.0
             max_pair = ("", "")
@@ -90,7 +91,6 @@ class AnalysisAgent(BaseAgent[AnalysisState]):
                     f"between '{max_pair[0]}' and '{max_pair[1]}' (r={max_corr:.2f})."
                 )
 
-        # Missing data note (if any survived cleaning)
         missing_counts = df.isnull().sum()
         if missing_counts.any():
             col_with_most_missing = missing_counts.idxmax()
