@@ -1,0 +1,8 @@
+# EN: Suppress known false positives in vendored setuptools dependencies
+# FR: Supprimer les faux positifs connus dans les dépendances vendues de setuptools
+
+# jaraco.context: Path traversal via malicious tar archives (not exploitable in our read-only container)
+CVE-2026-23949
+
+# wheel: Privilege Escalation via malicious wheel file (not exploitable; we don't install wheels at runtime)
+CVE-2026-24049
