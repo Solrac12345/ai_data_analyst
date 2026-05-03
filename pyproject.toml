@@ -15,6 +15,9 @@ dependencies = [
     "plotly>=5.18.0",
     "typer>=0.9.0",           # EN: For CLI interface / FR: Pour l'interface CLI
     "rich>=13.7.0",            # EN: For rich console output / FR: Pour une sortie console enrichie
+     # EN: Phase 5 Reporting Dependencies / FR: Dépendances de rapport Phase 5
+    "jinja2>=3.1.2",          # EN: Template engine for HTML reports / FR: Moteur de template pour rapports HTML
+    "markdown>=3.5.0",        # EN: Convert insights to rich HTML / FR: Convertir les insights en HTML enrichi
 ]
 
 [project.optional-dependencies]

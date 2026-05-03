@@ -20,8 +20,10 @@ src/core/state.py
 src/core/supervisor.py
 test/test_analysis.py
 test/test_cleaning.py
+test/test_cli.py
 test/test_config.py
 test/test_data_loader.py
+test/test_integration.py
 test/test_state.py
 test/test_supervisor.py
 test/test_viz.py
