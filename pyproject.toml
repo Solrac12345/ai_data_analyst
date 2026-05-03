@@ -27,6 +27,7 @@ dev = [
     "ruff>=0.3.0",
     "mypy>=1.8.0",
     "pandas-stubs>=2.2.0",
+    "types-Markdown>=3.5.0",  # EN: Add type stubs for markdown library / FR: Ajouter les stubs de type pour markdown
 ]
 
 [build-system]
