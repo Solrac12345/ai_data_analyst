@@ -44,11 +44,9 @@ async def run_analysis(request: AnalyzeRequest) -> AnalyzeResponse:
         if isinstance(final_state, dict):
             errors = final_state.get("errors", [])
             insights = final_state.get("insights", [])
-            plot_paths = final_state.get("plot_paths", [])
         else:
             errors = final_state.errors
             insights = final_state.insights
-            plot_paths = final_state.plot_paths
 
         if errors:
             return AnalyzeResponse(
