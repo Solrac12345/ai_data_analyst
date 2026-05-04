@@ -68,6 +68,15 @@ docker compose build
 # Run analysis (mounts current directory)
 docker compose run --rm app --path /data/sample.csv --report /data/output/report.html
 
+# Run full test suite with coverage
+docker compose --profile testing run --build test
+
+# Start container with interactive shell
+docker compose run --rm app bash
+
+# Mount local changes for live development
+docker compose run --rm -v ${PWD}/src:/app/src:ro app --path /data/sample.csv
+
 ## 📦 Installation
 
 ### Prerequisites
@@ -98,3 +107,11 @@ Verify Installation
 
     # Type check
     mypy src/
+
+### HTML Reporting
+
+# Generate report alongside analysis
+python -m src.cli.main --path data/sales.csv --report output/analysis_report.html
+
+# With custom output directory
+python -m src.cli.main --path data/sales.csv --output-dir results --report results/report.html

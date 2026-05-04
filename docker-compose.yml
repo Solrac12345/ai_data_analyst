@@ -1,7 +1,5 @@
 # EN: Local development configuration with volume mounting / FR: Configuration de développement local avec montage de volumes
 
-version: '3.8'
-
 services:
   app:
     build:
@@ -10,7 +8,7 @@ services:
     image: ai-data-analyst:latest
     container_name: ai-data-analyst
     volumes:
-      - .//app/ro
+      - ./:/app:ro          # EN: Fixed mount syntax / FR: Syntaxe de montage corrigée
       - ./output:/app/output
       - ./reports:/app/reports
     environment:
@@ -26,8 +24,6 @@ services:
     image: ai-data-analyst:latest
     container_name: ai-data-analyst-test
     volumes:
-      # EN: Don't mount src/ - it's already in the image. Only mount tests & config.
-      # FR: Ne pas monter src/ - il est déjà dans l'image. Monter uniquement les tests et la config.
       - ./test:/app/test:ro
       - ./config:/app/config:ro
       - ./pyproject.toml:/app/pyproject.toml:ro
