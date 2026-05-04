@@ -1,4 +1,4 @@
-# EN: Local development configuration with volume mounting / FR: Configuration de développement local avec montage de volumes
+# EN: Local development & API configuration / FR: Configuration de développement local & API
 
 services:
   app:
@@ -13,9 +13,28 @@ services:
       - ./reports:/app/reports
     environment:
       - PYTHONUNBUFFERED=1
-    # EN: Use command instead of entrypoint for easier CLI override / FR: Utiliser command au lieu d'entrypoint pour un override plus facile
     entrypoint: []
     command: ["python", "-m", "src.cli.main", "--help"]
+    user: appuser
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      target: runtime
+    image: ai-data-analyst:latest
+    container_name: ai-data-analyst-api
+    ports:
+      - "8000:8000"  # EN: Expose Swagger UI & API / FR: Exposer Swagger UI & API
+    volumes:
+      - ./:/app:ro   # EN: Mount project root for data access / FR: Monter la racine du projet pour l'accès aux données
+      - ./output:/app/output
+      - ./reports:/app/reports
+    environment:
+      - PYTHONUNBUFFERED=1
+    entrypoint: []
+    # EN: Run Uvicorn server / FR: Exécuter le serveur Uvicorn
+    command: ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
     user: appuser
     restart: unless-stopped
 
