@@ -12,6 +12,9 @@ src/ai_data_analyst.egg-info/SOURCES.txt
 src/ai_data_analyst.egg-info/dependency_links.txt
 src/ai_data_analyst.egg-info/requires.txt
 src/ai_data_analyst.egg-info/top_level.txt
+src/api/__init__.py
+src/api/main.py
+src/api/schemas.py
 src/cli/__init__.py
 src/cli/main.py
 src/core/__init__.py
@@ -21,6 +24,7 @@ src/core/supervisor.py
 src/reporting/__init__.py
 src/reporting/generator.py
 test/test_analysis.py
+test/test_api.py
 test/test_cleaning.py
 test/test_cli.py
 test/test_config.py

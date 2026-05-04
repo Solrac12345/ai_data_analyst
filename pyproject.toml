@@ -18,6 +18,8 @@ dependencies = [
      # EN: Phase 5 Reporting Dependencies / FR: Dépendances de rapport Phase 5
     "jinja2>=3.1.2",          # EN: Template engine for HTML reports / FR: Moteur de template pour rapports HTML
     "markdown>=3.5.0",        # EN: Convert insights to rich HTML / FR: Convertir les insights en HTML enrichi
+    "fastapi>=0.110.0",        # EN: Modern async API framework / FR: Framework API async moderne
+    "uvicorn[standard]>=0.27.0", # EN: ASGI server for FastAPI / FR: Serveur ASGI pour FastAPI
 ]
 
 [project.optional-dependencies]
@@ -28,6 +30,8 @@ dev = [
     "mypy>=1.8.0",
     "pandas-stubs>=2.2.0",
     "types-Markdown>=3.5.0",  # EN: Add type stubs for markdown library / FR: Ajouter les stubs de type pour markdown
+    "httpx>=0.27.0",           # EN: Async HTTP client for testing / FR: Client HTTP async pour tests
+    "pytest-asyncio>=0.23.0",  # EN: Async test support for pytest / FR: Support async pour pytest
 ]
 
 [build-system]

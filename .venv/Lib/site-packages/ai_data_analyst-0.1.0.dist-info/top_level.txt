@@ -1,5 +1,6 @@
 __init__
 agents
+api
 cli
 core
 reporting
