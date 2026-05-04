@@ -10,5 +10,5 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=8000,
         log_level="info",
-        reload=False  # EN: Disable reload in production / FR: Désactiver le rechargement en production
+        reload=False,  # EN: Disable reload in production / FR: Désactiver le rechargement en production
     )
