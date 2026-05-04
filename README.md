@@ -1,117 +1,112 @@
-# AI Data Analyst Multi-Agent
-Automated data analysis pipeline with specialized agents.
-### ✅ Phase 0: CI Foundation & Configuration (Complete)
-- [x] GitHub Actions CI/CD pipeline
-- [x] Ruff linting & formatting
-- [x] MyPy strict type checking
-- [x] Pytest configuration with coverage
-- [x] Pydantic settings with YAML + env var support
-- [x] Configuration validation & testing
+# 🤖 AI Data Analyst Pipeline
 
-**Status**: ✅ All tests passing, CI green
+A modular, agent-driven data analysis pipeline built with **LangGraph**, **Typer**, and **Rich**. Automatically loads, cleans, analyzes, and visualizes datasets, then generates interactive HTML reports. Fully containerized with Docker and production-ready CI/CD.
 
-### ✅ Phase 1: Core Architecture (Complete)
-- [x] `AnalysisState` Pydantic model for shared state
-- [x] LangGraph `StateGraph` supervisor
-- [x] Conditional routing logic
-- [x] State validation & error handling
-- [x] Unit tests for state & supervisor
+## ✨ Features
 
-**Status**: ✅ All tests passing, CI green
+- 🧠 **Agent Architecture**: LangGraph state machine orchestrating `DataLoader`, `Cleaning`, `Analysis`, and `Viz` agents
+- 🖥️ **CLI Interface**: Typer-powered commands with Rich console output & progress logging
+- 📊 **Statistical Analysis**: Automatic descriptive stats, correlation matrices, and natural language insights
+- 🎨 **Visualization Code**: Auto-generates ready-to-run Matplotlib/Plotly snippets
+- 📄 **HTML Reporting**: Jinja2 + Markdown engine produces responsive, interactive reports
+- 🐳 **Docker Ready**: Multi-stage build, non-root user, Trivy security scanning, `docker-compose` dev workflow
+- ✅ **Tested & CI**: 28 unit/integration tests, GitHub Actions pipeline (lint → type → test → docker)
+- ⚙️ **Configurable**: Override strategies, thresholds, and libraries via YAML or environment variables
 
-### ✅ Phase 2: Agent Implementation (Complete)
-- [x] `BaseAgent` abstract class with type generics
-- [x] `DataLoaderAgent`: CSV/Excel loading with encoding handling
-- [x] `CleaningAgent`: 
-  - Duplicate removal
-  - Missing value imputation (mean/median/mode/drop)
-  - Z-score outlier detection
-- [x] Integration with supervisor graph
-- [x] Comprehensive unit tests for all agents
+## 🚀 Quick Start
 
-**Status**: ✅ All tests passing, CI green
-
-### ✅ Phase 3: Analysis & Visualization (Complete)
-- [x] `AnalysisAgent`: Descriptive statistics, correlation matrices, natural language insights
-- [x] `VizAgent`: Auto-generation of Matplotlib/Plotly code snippets
-- [x] CLI entrypoint: `python -m src.cli.main analyze data.csv`
-- [x] Full pipeline integration test
-- [x] Updated documentation & badges
-
-**Status**: ✅ All tests passing, CI green
-
-### ✅ Phase 4: Containerization (Complete)
-- [x] Multi-stage `Dockerfile` (Python 3.11-slim, non-root user)
-- [x] `docker-compose.yml` for local development & volume mounting
-- [x] Trivy vulnerability scanning in CI/CD
-- [x] `.dockerignore` for optimized builds
-
-**Status**: ✅ All tests passing, CI green, Docker image secure
-
-### ✅ Phase 5: Advanced HTML Reporting (Complete)
-- [x] `ReportGenerator` engine using Jinja2 & Markdown
-- [x] Interactive HTML reports with Plotly integration
-- [x] CLI integration: `--report` flag for automatic generation
-- [x] Unit tests for report generation
-
-**Status**: ✅ All tests passing, CI green
-
----
-
-## 🐳 Docker Usage
-
-### Build & Run Locally
+### Local Installation
 ```bash
-# Build the image
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -e ".[dev]"
+
+# Run analysis
+python -m src.cli.main --path data/sample.csv --report output/report.html
+
+### Docker Installation
+# Build & run in one command
 docker compose build
+docker compose run --rm --entrypoint "" app python -m src.cli.main --path /app/data/sample.csv --report /app/output/report.html
 
-# Run analysis (mounts current directory)
-docker compose run --rm app --path /data/sample.csv --report /data/output/report.html
+💡 Windows/Git Bash Users: Path conversion can cause issues. Prepend commands with MSYS_NO_PATHCONV=1:
 
+MSYS_NO_PATHCONV=1 docker compose run --rm --entrypoint "" app python -m src.cli.main --path /app/data/sample.csv --report /app/output/report.html
+
+## Example Run:
+
+$ python -m src.cli.main --path data/sample.csv --report output/report.html
+Starting Analysis for: data/sample.csv
+[DataLoaderAgent:INFO] Loaded 3 rows, 3 columns
+[CleaningAgent:INFO] Removed 0 duplicate rows
+[AnalysisAgent:INFO] Generated 2 insights
+[VizAgent:INFO] Generated matplotlib visualization code for 'Age'
+✅ Report saved to: output/report.html
+
+## ⚙️ Configuration
+# Change missing value strategy
+APP_CLEANING__MISSING_STRATEGY=median python -m src.cli.main --path data.csv
+
+# Adjust outlier threshold
+APP_CLEANING__OUTLIER_THRESHOLD=2.5 python -m src.cli.main --path data.csv
+
+# Switch visualization library
+APP_VISUALIZATION__LIBRARY=plotly python -m src.cli.main --path data.csv
+
+## Docker Workflow
+Development:
+# Interactive shell (bypass entrypoint)
+MSYS_NO_PATHCONV=1 docker compose run --rm --entrypoint "" app bash
+
+# Mount local changes for live dev
+MSYS_NO_PATHCONV=1 docker compose run --rm -v ${PWD}/src:/app/src:ro app --path /app/data/sample.csv
+
+## Testing in Container
 # Run full test suite with coverage
 docker compose --profile testing run --build test
 
-# Start container with interactive shell
-docker compose run --rm app bash
+## Security Scanning
+trivy image ai-data-analyst:latest
 
-# Mount local changes for live development
-docker compose run --rm -v ${PWD}/src:/app/src:ro app --path /data/sample.csv
+## 📄 HTML Reporting
+The pipeline generates rich, responsive HTML reports containing:
+📊 Descriptive statistics tables (mean, std, min, max, quartiles)
+💡 Markdown-rendered insights with natural language explanations
+🎨 Generated Matplotlib/Plotly code snippets ready to execute
+📈 Plotly CDN integration for interactive charts in the browser
+⚠️ Error tracking & pipeline status visibility
+📱 Responsive design (mobile & desktop)
 
-## 📦 Installation
+## Open the report:
+# Linux/macOS
+xdg-open output/report.html  # or open -a Preview
 
-### Prerequisites
-- Python 3.11+
-- Git
+# Windows
+start output/report.html
 
-### Setup
-    ```bash
-    # Clone repository
-    git clone https://github.com/YOUR_USERNAME/ai-data-analyst.git
-    cd ai-data-analyst
+## Testing & CI/CD
+# Run all tests locally
+pytest test/ -v --cov=src
 
-    # Create virtual environment
-    python -m venv .venv
-    source .venv/Scripts/activate  # Windows Git Bash
-    # source .venv/bin/activate    # macOS/Linux
+# Type checking
+mypy src/ test/
 
-    # Install dependencies
-    pip install -e ".[dev]"
+# Lint & format
+ruff check .
+ruff format .
 
-Verify Installation
+GitHub Actions Pipeline:
+lint → Ruff linting & formatting check
+type-check → MyPy static type validation
+test → Pytest with coverage
+docker-build → Multi-stage build + Trivy vulnerability scan
+All jobs must pass before merging to main.
 
-    # Run tests
-    pytest test/ -v
-
-    # Run linter
-    ruff check .
-
-    # Type check
-    mypy src/
-
-### HTML Reporting
-
-# Generate report alongside analysis
-python -m src.cli.main --path data/sales.csv --report output/analysis_report.html
-
-# With custom output directory
-python -m src.cli.main --path data/sales.csv --output-dir results --report results/report.html
+🙏 Acknowledgments
+LangGraph for agent orchestration
+Typer for CLI framework
+Jinja2 for HTML templating
+Plotly for interactive visualizations
