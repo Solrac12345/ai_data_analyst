@@ -110,3 +110,15 @@ LangGraph for agent orchestration
 Typer for CLI framework
 Jinja2 for HTML templating
 Plotly for interactive visualizations
+
+---
+
+##  REST API (Phase 6)
+
+The pipeline is exposed via a production-ready FastAPI server with async support, Swagger UI, and thread-pool offloading for heavy computation.
+
+### 🚀 Start API Server
+```bash
+# Launch API service (accessible at http://localhost:8000)
+docker compose up -d api
+
