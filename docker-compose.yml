@@ -3,50 +3,42 @@
 version: '3.8'
 
 services:
-  # EN: Main application service / FR: Service principal de l'application
   app:
     build:
       context: .
-      target: runtime  # EN: Use only the runtime stage / FR: Utiliser uniquement l'étape runtime
+      target: runtime
     image: ai-data-analyst:latest
     container_name: ai-data-analyst
-    
-    # EN: Mount local directories for data persistence / FR: Monter les répertoires locaux pour la persistance des données
     volumes:
-      - ./data:/app/data:ro          # EN: Read-only data input / FR: Entrée de données en lecture seule
-      - ./output:/app/output         # EN: Writable output directory / FR: Répertoire de sortie en écriture
-      - ./reports:/app/reports       # EN: Writable reports directory / FR: Répertoire de rapports en écriture
-    
-    # EN: Environment variables / FR: Variables d'environnement
+      - .//app/ro
+      - ./output:/app/output
+      - ./reports:/app/reports
     environment:
       - PYTHONUNBUFFERED=1
-      # EN: Override config via env vars if needed / FR: Surcharger la config via variables d'environnement si nécessaire
-      # - APP_CLEANING__OUTLIER_THRESHOLD=2.5
-    
-    # EN: Default command shows help; override at runtime / FR: La commande par défaut affiche l'aide ; à remplacer à l'exécution
     command: --help
-    
-    # EN: Security: run as non-root (already set in Dockerfile) / FR: Sécurité : exécuter en tant que non-root (déjà défini dans Dockerfile)
     user: appuser
-    
-    # EN: Restart policy for resilience / FR: Politique de redémarrage pour la résilience
     restart: unless-stopped
 
-  # EN: Optional: Service for running tests in container / FR: Optionnel : Service pour exécuter les tests dans le conteneur
   test:
     build:
       context: .
-      target: builder  # EN: Use builder stage to have dev dependencies / FR: Utiliser l'étape builder pour avoir les dépendances de développement
+      target: builder
     image: ai-data-analyst:latest
     container_name: ai-data-analyst-test
     volumes:
-      - ./src:/app/src:ro
+      - ./src:/app/src:ro          # EN: Read-only mount prevents write conflicts / FR: Montage en lecture seule évite les conflits d'écriture
       - ./test:/app/test:ro
       - ./config:/app/config:ro
       - ./pyproject.toml:/app/pyproject.toml:ro
     environment:
       - PYTHONUNBUFFERED=1
-    command: python -m pytest test/ -v --cov=src
-    user: root  # EN: Need root to install test deps if not in image / FR: Besoin de root pour installer les dépendances de test si non incluses
+    entrypoint: []
+    # EN: Use non-editable install to avoid permission issues with mounted volumes / FR: Utiliser une installation non-éditable pour éviter les problèmes de permissions
+    command: >
+      sh -c "
+        pip install --no-cache-dir '.[dev]' &&
+        python -m pytest test/ -v --cov=src
+      "
+    user: root
     profiles:
-      - testing  # EN: Run with: docker-compose --profile testing run test / FR: Exécuter avec : docker-compose --profile testing run test
+      - testing
