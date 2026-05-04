@@ -26,14 +26,14 @@ services:
     image: ai-data-analyst:latest
     container_name: ai-data-analyst-test
     volumes:
-      - ./src:/app/src:ro          # EN: Read-only mount prevents write conflicts / FR: Montage en lecture seule évite les conflits d'écriture
+      # EN: Don't mount src/ - it's already in the image. Only mount tests & config.
+      # FR: Ne pas monter src/ - il est déjà dans l'image. Monter uniquement les tests et la config.
       - ./test:/app/test:ro
       - ./config:/app/config:ro
       - ./pyproject.toml:/app/pyproject.toml:ro
     environment:
       - PYTHONUNBUFFERED=1
     entrypoint: []
-    # EN: Use non-editable install to avoid permission issues with mounted volumes / FR: Utiliser une installation non-éditable pour éviter les problèmes de permissions
     command: >
       sh -c "
         pip install --no-cache-dir '.[dev]' &&
