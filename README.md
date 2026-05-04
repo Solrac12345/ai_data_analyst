@@ -40,6 +40,34 @@ Automated data analysis pipeline with specialized agents.
 
 **Status**: ✅ All tests passing, CI green
 
+### ✅ Phase 4: Containerization (Complete)
+- [x] Multi-stage `Dockerfile` (Python 3.11-slim, non-root user)
+- [x] `docker-compose.yml` for local development & volume mounting
+- [x] Trivy vulnerability scanning in CI/CD
+- [x] `.dockerignore` for optimized builds
+
+**Status**: ✅ All tests passing, CI green, Docker image secure
+
+### ✅ Phase 5: Advanced HTML Reporting (Complete)
+- [x] `ReportGenerator` engine using Jinja2 & Markdown
+- [x] Interactive HTML reports with Plotly integration
+- [x] CLI integration: `--report` flag for automatic generation
+- [x] Unit tests for report generation
+
+**Status**: ✅ All tests passing, CI green
+
+---
+
+## 🐳 Docker Usage
+
+### Build & Run Locally
+```bash
+# Build the image
+docker compose build
+
+# Run analysis (mounts current directory)
+docker compose run --rm app --path /data/sample.csv --report /data/output/report.html
+
 ## 📦 Installation
 
 ### Prerequisites
