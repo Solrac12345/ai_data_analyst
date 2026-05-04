@@ -1,8 +1,11 @@
-# EN: FastAPI application entrypoint with health check
-# FR: Point d'entrée de l'application FastAPI avec vérification de santé
+# EN: FastAPI application with async pipeline integration
+# FR: Application FastAPI avec intégration async du pipeline
 
-from fastapi import FastAPI
+import asyncio
+from pathlib import Path
+from fastapi import FastAPI, HTTPException
 from src.api.schemas import AnalyzeRequest, AnalyzeResponse
+from src.core.supervisor import supervisor_graph
 
 app = FastAPI(
     title="AI Data Analyst API",
@@ -20,10 +23,49 @@ async def health_check() -> dict[str, str]:
 @app.post("/analyze", response_model=AnalyzeResponse, tags=["Analysis"])
 async def run_analysis(request: AnalyzeRequest) -> AnalyzeResponse:
     """
-    Trigger the full analysis pipeline.
-    (Async integration will be implemented in Phase 6 Step 2)
+    Trigger the full analysis pipeline asynchronously.
+    Offloads synchronous LangGraph execution to a background thread.
     """
-    return AnalyzeResponse(
-        status="pending",
-        message="Endpoint scaffolded. Full async integration coming in Step 2.",
-    )
+    data_path = Path(request.data_path)
+    if not data_path.exists():
+        return AnalyzeResponse(
+            status="error",
+            message=f"File not found: {request.data_path}",
+            errors=[f"File not found: {request.data_path}"],
+        )
+
+    try:
+        # EN: Offload sync pipeline to thread pool / FR: Déléguer le pipeline synchrone au pool de threads
+        final_state = await asyncio.to_thread(
+            supervisor_graph.invoke, {"data_path": request.data_path}
+        )
+
+        # Extract results (handle dict vs Pydantic model)
+        if isinstance(final_state, dict):
+            errors = final_state.get("errors", [])
+            insights = final_state.get("insights", [])
+            plot_paths = final_state.get("plot_paths", [])
+        else:
+            errors = final_state.errors
+            insights = final_state.insights
+            plot_paths = final_state.plot_paths
+
+        if errors:
+            return AnalyzeResponse(
+                status="error",
+                message="Pipeline completed with errors",
+                errors=errors,
+                insights=insights,
+            )
+
+        return AnalyzeResponse(
+            status="success",
+            message="Analysis completed successfully",
+            report_url=request.report_path,
+            insights=insights,
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Pipeline execution failed: {str(e)}"
+        )
