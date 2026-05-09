@@ -26,6 +26,7 @@ pip install -e ".[dev]"
 
 # Run analysis
 python -m src.cli.main --path data/sample.csv --report output/report.html
+start output/report.html
 
 ### Docker Installation
 # Build & run in one command
